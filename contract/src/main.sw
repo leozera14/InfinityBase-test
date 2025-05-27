@@ -173,12 +173,16 @@ impl Crowdfund for Contract {
     #[storage(read)]
     fn get_my_campaigns() -> Vec<Campaign> {
         let mut res: Vec<Campaign> = Vec::new();
+
         let count = storage.campaign_count.read();
+
         let caller = match msg_sender().unwrap() {
             Identity::Address(a) => a,
             _ => revert(42),
         };
+
         let mut i = 0;
+
         while i < count {
             let camp = storage.campaigns.get(i).read();
             if camp.creator == caller {
@@ -186,18 +190,23 @@ impl Crowdfund for Contract {
             }
             i += 1;
         }
+
         res
     }
 
     #[storage(read)]
     fn get_contributed_campaigns() -> Vec<Campaign> {
         let mut res: Vec<Campaign> = Vec::new();
+
         let count = storage.campaign_count.read();
+
         let caller = match msg_sender().unwrap() {
             Identity::Address(a) => a,
             _ => revert(42),
         };
+
         let mut i = 0;
+
         while i < count {
             let amount = storage.contributions.get((i, caller)).try_read().unwrap_or(0);
             if amount > 0 {
@@ -206,6 +215,7 @@ impl Crowdfund for Contract {
             }
             i += 1;
         }
+
         res
     }
 }
@@ -222,7 +232,7 @@ fn test_create_campaign() {
     let _ = c.creator;
     assert_eq(c.goal, 1_000);
     assert_eq(c.pledged, 0);
-    assert(c.active == true); // <- ATIVO
+    assert(c.active == true);
 }
 #[test(should_revert)]
 fn test_create_campaign_with_zero_goal_should_fail() {
@@ -282,3 +292,6 @@ fn test_get_contributed_campaigns_empty() {
     let contrib = instance.get_contributed_campaigns();
     assert(contrib.len() == 0);
 }
+
+// We dont have tests for functions that handle with real values like contribute_campaign, as here we cant
+// send it, so the test will always fail.
