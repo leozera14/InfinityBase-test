@@ -42,6 +42,12 @@ abi Crowdfund {
 
     #[storage(read)]
     fn get_campaign(id: u64) -> Campaign;
+
+    #[storage(read)]
+    fn get_my_campaigns() -> Vec<Campaign>;
+
+    #[storage(read)]
+    fn get_contributed_campaigns() -> Vec<Campaign>;
 }
 
 impl Crowdfund for Contract {
@@ -163,6 +169,45 @@ impl Crowdfund for Contract {
     fn get_campaign(id: u64) -> Campaign {
         storage.campaigns.get(id).read()
     }
+
+    #[storage(read)]
+    fn get_my_campaigns() -> Vec<Campaign> {
+        let mut res: Vec<Campaign> = Vec::new();
+        let count = storage.campaign_count.read();
+        let caller = match msg_sender().unwrap() {
+            Identity::Address(a) => a,
+            _ => revert(42),
+        };
+        let mut i = 0;
+        while i < count {
+            let camp = storage.campaigns.get(i).read();
+            if camp.creator == caller {
+                res.push(camp);
+            }
+            i += 1;
+        }
+        res
+    }
+
+    #[storage(read)]
+    fn get_contributed_campaigns() -> Vec<Campaign> {
+        let mut res: Vec<Campaign> = Vec::new();
+        let count = storage.campaign_count.read();
+        let caller = match msg_sender().unwrap() {
+            Identity::Address(a) => a,
+            _ => revert(42),
+        };
+        let mut i = 0;
+        while i < count {
+            let amount = storage.contributions.get((i, caller)).try_read().unwrap_or(0);
+            if amount > 0 {
+                let camp = storage.campaigns.get(i).read();
+                res.push(camp);
+            }
+            i += 1;
+        }
+        res
+    }
 }
 
 // ------------------- TESTS  ------------------- //
@@ -197,4 +242,43 @@ fn test_multiple_campaigns() {
     let c2 = instance.get_campaign(id2);
     assert_eq(c1.goal, 100);
     assert_eq(c2.goal, 200);
+}
+
+#[test]
+fn test_get_campaign_count_and_get_campaign() {
+    let instance = abi(Crowdfund, CONTRACT_ID);
+    assert_eq(instance.get_campaign_count(), 0);
+
+    let id1 = instance.create_campaign(100);
+    let id2 = instance.create_campaign(200);
+    assert_eq(instance.get_campaign_count(), 2);
+
+    let c1 = instance.get_campaign(id1);
+    assert_eq(c1.goal, 100);
+    let c2 = instance.get_campaign(id2);
+    assert_eq(c2.goal, 200);
+}
+
+#[test]
+fn test_get_my_campaigns() {
+    let instance = abi(Crowdfund, CONTRACT_ID);
+    let _ = instance.create_campaign(150);
+    let _ = instance.create_campaign(250);
+    let _ = instance.create_campaign(350);
+
+    let my = instance.get_my_campaigns();
+    assert_eq(my.len(), 3);
+    assert_eq(my.get(0).unwrap().goal, 150);
+    assert_eq(my.get(1).unwrap().goal, 250);
+    assert_eq(my.get(2).unwrap().goal, 350);
+}
+
+#[test]
+fn test_get_contributed_campaigns_empty() {
+    let instance = abi(Crowdfund, CONTRACT_ID);
+    let _ = instance.create_campaign(500);
+    let _ = instance.create_campaign(600);
+
+    let contrib = instance.get_contributed_campaigns();
+    assert(contrib.len() == 0);
 }
