@@ -45,14 +45,6 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
     return formatFuelBalance(balance.toString() as string);
   }, [balance]);
 
-  console.log({
-    connectors,
-    isConnected,
-    account,
-    provider,
-    balance,
-  });
-
   const value = useMemo<WalletContextData>(
     () => ({
       connectors,

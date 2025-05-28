@@ -11,6 +11,7 @@
     "strict": true,
     "verbatimModuleSyntax": true,
     "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
     "noUnusedParameters": true,
     "noUnusedLocals": true,
     "noEmit": true,

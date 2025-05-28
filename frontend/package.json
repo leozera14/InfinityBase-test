@@ -4,8 +4,9 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite build",
+    "typegen": "npx fuels typegen -i ../contract/out/debug/my-crowdfund-abi.json -o src/contracts",
+    "dev": "npm run typegen && vite",
+    "build": "npm run typegen && tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview"
   },

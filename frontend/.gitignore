@@ -1,3 +1,10 @@
+#Env
+.env
+
+# Contracts
+/src/contracts/*
+
+
 # Logs
 logs
 *.log
