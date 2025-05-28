@@ -8,22 +8,22 @@ import {
   useBalance,
   useProvider,
   useChain,
+  useWallet as useWalletFuel,
 } from "@fuels/react";
 
 import type { WalletContextData } from "../types/WalletContext";
-import { SUPPORTED_NETWORKS } from "../constants/supported-networks";
-import { formatFuelBalance } from "../utils/format-fuel-balance";
 
 const WalletContext = createContext<WalletContextData | undefined>(undefined);
 
 export function WalletProvider({ children }: { children: React.ReactNode }) {
   const { connectors } = useConnectors();
-  const { connect, connectAsync } = useConnect();
-  const { disconnect } = useDisconnect();
+  const { connectAsync } = useConnect();
+  const { disconnectAsync } = useDisconnect();
   const { isConnected } = useIsConnected();
   const { account } = useAccount();
   const { provider } = useProvider();
   const { chain } = useChain();
+  const { wallet } = useWalletFuel();
   const { balance, refetch: refetchBalance } = useBalance({
     account,
     assetId: chain?.consensusParameters.baseAssetId,
@@ -35,36 +35,26 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
     return () => clearInterval(iv);
   }, [account, refetchBalance]);
 
-  const fullNetworkInfo = useMemo(() => {
-    return SUPPORTED_NETWORKS.find((network) => network.url === provider?.url);
-  }, [provider?.url]);
-
-  const formattedBalance = useMemo(() => {
-    if (!balance) return 0.0;
-
-    return formatFuelBalance(balance.toString() as string);
-  }, [balance]);
-
   const value = useMemo<WalletContextData>(
     () => ({
       connectors,
-      connect,
+      wallet,
       connectAsync,
-      disconnect,
+      disconnectAsync,
       isConnected,
       account,
-      chain: fullNetworkInfo,
-      balance: formattedBalance,
+      provider,
+      balance,
     }),
     [
       connectors,
-      connect,
+      wallet,
       connectAsync,
-      disconnect,
+      disconnectAsync,
       isConnected,
       account,
-      fullNetworkInfo,
-      formattedBalance,
+      provider,
+      balance,
     ]
   );
 
@@ -73,8 +63,8 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
   );
 }
 
-export function useWallet(): WalletContextData {
+export function useWalletContext(): WalletContextData {
   const ctx = useContext(WalletContext);
-  if (!ctx) throw new Error("useWallet must be within <WalletProvider>");
+  if (!ctx) throw new Error("Invalid useWalletContext value");
   return ctx;
 }

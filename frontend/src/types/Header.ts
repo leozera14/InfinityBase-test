@@ -1,8 +1,7 @@
-import type { ChainProps } from "./WalletContext";
-
+import type { BN, Provider } from "fuels";
 export interface HeaderComponentProps {
   account: string | null;
-  chain: ChainProps | undefined;
-  balance: number;
+  provider: Provider | undefined;
+  balance: BN | null;
   disconnect: () => void;
 }

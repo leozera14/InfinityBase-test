@@ -3,6 +3,8 @@ import { FuelProvider } from "@fuels/react";
 import { defaultConnectors } from "@fuels/connectors";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { SUPPORTED_NETWORKS } from "../constants/supported-networks";
+import { WalletProvider } from "./WalletContext";
+import { CrowdfundProvider } from "./CrowdfundContext";
 
 const queryClient = new QueryClient();
 
@@ -16,7 +18,9 @@ export function AppProviders({ children }: { children: React.ReactNode }) {
         networks={SUPPORTED_NETWORKS}
         ui={false}
       >
-        {children}
+        <WalletProvider>
+          <CrowdfundProvider>{children}</CrowdfundProvider>
+        </WalletProvider>
       </FuelProvider>
     </QueryClientProvider>
   );

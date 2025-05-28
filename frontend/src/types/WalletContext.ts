@@ -1,4 +1,4 @@
-import type { FuelConnector } from "fuels";
+import type { Account, BN, FuelConnector, Provider } from "fuels";
 
 export interface ChainProps {
   name: string;
@@ -8,11 +8,11 @@ export interface ChainProps {
 
 export interface WalletContextData {
   connectors: FuelConnector[];
-  connect: (name?: string) => void;
+  wallet: Account | null;
   connectAsync: (name?: string) => Promise<boolean>;
-  disconnect: () => void;
+  disconnectAsync: () => Promise<boolean>;
   isConnected: boolean;
   account: string | null;
-  chain: ChainProps | undefined;
-  balance: number;
+  provider: Provider | undefined;
+  balance: BN | null;
 }
