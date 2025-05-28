@@ -4,8 +4,9 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        green: "rgb(0, 219, 124)",
-        black: "rgb(33, 33, 33)",
+        "green-1": "rgb(0, 219, 124)",
+        "black-1": "rgb(33, 33, 33)",
+        "black-2": "#100e0e",
       },
       fontFamily: {
         sans: ["Inter", "ui-sans-serif", "system-ui"],

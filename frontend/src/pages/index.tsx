@@ -7,7 +7,7 @@ export default function MainPage() {
   const { account } = useWallet();
 
   return (
-    <div className="w-full flex flex-col min-h-full p-2">
+    <div className="w-full flex flex-col min-h-full">
       {account ? (
         <>
           <Header />

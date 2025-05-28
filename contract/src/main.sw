@@ -48,6 +48,9 @@ abi Crowdfund {
 
     #[storage(read)]
     fn get_contributed_campaigns() -> Vec<Campaign>;
+
+    #[storage(read)]
+    fn get_all_campaigns() -> Vec<Campaign>;
 }
 
 impl Crowdfund for Contract {
@@ -218,6 +221,22 @@ impl Crowdfund for Contract {
 
         res
     }
+
+    #[storage(read)]
+    fn get_all_campaigns() -> Vec<Campaign> {
+        let mut res: Vec<Campaign> = Vec::new();
+
+        let count = storage.campaign_count.read();
+
+        let mut i = 0;
+
+        while i < count {
+            res.push(storage.campaigns.get(i).read());
+            i += 1;
+        }
+
+        res
+    }
 }
 
 // ------------------- TESTS  ------------------- //
@@ -291,6 +310,23 @@ fn test_get_contributed_campaigns_empty() {
 
     let contrib = instance.get_contributed_campaigns();
     assert(contrib.len() == 0);
+}
+
+#[test]
+fn test_get_all_campaigns() {
+    let instance = abi(Crowdfund, CONTRACT_ID);
+
+    let id1 = instance.create_campaign(100);
+    let id2 = instance.create_campaign(200);
+    let id3 = instance.create_campaign(300);
+
+    let all = instance.get_all_campaigns();
+
+    assert_eq(all.len(), 3);
+
+    assert_eq(all.get(0).unwrap().goal, 100);
+    assert_eq(all.get(1).unwrap().goal, 200);
+    assert_eq(all.get(2).unwrap().goal, 300);
 }
 
 // We dont have tests for functions that handle with real values like contribute_campaign, as here we cant

@@ -11,8 +11,8 @@ Mas não se preocupe, eu também deixei nesse arquivo os Addresses dos contratos
 ## Addresses dos deploys que eu gerei na Devnet e Testnet já no formato do `.env` do Frontend:
 
 ```
-VITE_CONTRACT_ID_SEPOLIA=0x15494ae5037d0e50d70cc4610b5b87ef752465c6b4aabca8a0f43cb56e314f3a
-VITE_CONTRACT_ID_BETA2=afde73f191958c4c717aa07b49f5536a4c2f318a04d1e2afc6550b1ff452b37e
+VITE_CONTRACT_ID_SEPOLIA=0x5c4bd077820ec86897467f99330aaeb6b4dc4db984fc1055ad3eaf990fc5d17c
+VITE_CONTRACT_ID_BETA2=b9988c0e788c456c3a13c598a00413bdc12aa5672db3607e9869cca16abd392e
 ```
 
 ---
