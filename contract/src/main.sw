@@ -12,6 +12,7 @@ use std::{
 };
 
 struct Campaign {
+    pub id: u64,
     pub creator: Address,
     pub goal: u64,
     pub pledged: u64,
@@ -68,6 +69,7 @@ impl Crowdfund for Contract {
         };
 
         let camp = Campaign {
+            id,
             creator,
             goal,
             pledged: 0,
